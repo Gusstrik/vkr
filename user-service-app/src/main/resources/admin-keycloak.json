@@ -1,0 +1,13 @@
+{
+  "realm": "VKR",
+  "auth-server-url": "http://127.0.0.1:8080/auth/",
+  "ssl-required": "external",
+  "resource": "realm-management",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "z4hUR3r1jWdmeunUBdjlz7BWBQ5J1bAr"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0,
+  "policy-enforcer": {}
+}

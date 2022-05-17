@@ -18,6 +18,7 @@
         <module>user-service-app</module>
         <module>user-service-core</module>
         <module>user-service-dto</module>
+        <module>user-service-web</module>
     </modules>
 
     <properties>
