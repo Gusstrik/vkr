@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.core.Response;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,6 +79,22 @@ public class UserServiceImpl implements UserService {
             keycloak.realm(UserServiceCoreConfig.realm).users().get(user.getId()).update(user);
             dataResponse.setSuccess(true);
             dataResponse.setData(createRequest);
+        }
+        return dataResponse;
+    }
+
+    @Override
+    public BaseDataResponse<?> deleteUser(String username) {
+        List<UserRepresentation> search = keycloak.realm(UserServiceCoreConfig.realm).users().search(username);
+        BaseDataResponse dataResponse = new BaseDataResponse();
+        dataResponse.setSuccess(false);
+        if (!CollectionUtils.isEmpty(search)) {
+            Response response = keycloak.realm(UserServiceCoreConfig.realm).users().delete(search.get(0).getId());
+            dataResponse.setSuccess(true);
+        } else {
+            OperationError operationError = new OperationError();
+            operationError.setMessage("User doesn't exist");
+            dataResponse.setErrorList(Collections.singletonList(operationError));
         }
         return dataResponse;
     }

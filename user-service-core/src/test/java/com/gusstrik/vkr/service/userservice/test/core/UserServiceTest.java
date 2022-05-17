@@ -7,6 +7,7 @@ import com.gusstrik.vkr.service.userservice.core.config.UserServiceCoreConfig;
 import com.gusstrik.vkr.service.userservice.dto.UserCreateRequest;
 import com.gusstrik.vkr.service.userservice.dto.UserDto;
 import com.gusstrik.vkr.service.userservice.dto.UserSearchFilter;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +53,11 @@ public class UserServiceTest {
         createRequest.setLastName("Петров");
         BaseDataResponse<UserDto> response = userService.saveUser(createRequest);
         System.out.println(response.getData());
+    }
+
+    @Test
+    public void deleteUserTest(){
+        BaseDataResponse<?> response = userService.deleteUser("user2");
+        Assertions.assertTrue(response.getSuccess());
     }
 }

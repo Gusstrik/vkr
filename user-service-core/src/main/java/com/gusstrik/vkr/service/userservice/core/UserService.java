@@ -17,4 +17,6 @@ public interface UserService {
 
     BaseDataResponse<UserDto> saveUser(UserCreateRequest createRequest);
 
+    BaseDataResponse<?> deleteUser (String username);
+
 }
