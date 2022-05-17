@@ -10,15 +10,19 @@ import com.gusstrik.vkr.service.userservice.core.mapper.UserDtoMapper;
 import com.gusstrik.vkr.service.userservice.dto.UserCreateRequest;
 import com.gusstrik.vkr.service.userservice.dto.UserDto;
 import com.gusstrik.vkr.service.userservice.dto.UserSearchFilter;
+import lombok.extern.slf4j.Slf4j;
 import org.keycloak.admin.client.Keycloak;
+import org.keycloak.representations.idm.RealmRepresentation;
 import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import javax.ws.rs.core.Response;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final Keycloak keycloak;
@@ -51,14 +55,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public BaseDataResponse<UserDto> createUser(UserCreateRequest createRequest) {
-        Response response = keycloak.realm(UserServiceCoreConfig.realm).users().create(UserDtoMapper.toUserRepresentation(createRequest));
+    public BaseDataResponse<UserDto> saveUser(UserCreateRequest createRequest) {
+        List<UserRepresentation> search = keycloak.realm(UserServiceCoreConfig.realm).users().search(createRequest.getUsername());
         BaseDataResponse dataResponse = new BaseDataResponse();
-        if (response.getStatus()>201){
-            dataResponse.setSuccess(false);
-            OperationError operationError = new OperationError();
-            operationError.setMessage(response.getStatusInfo().getReasonPhrase());
-        }else{
+        if (CollectionUtils.isEmpty(search)) {
+            log.debug("User " + createRequest.getUsername() + " will be created");
+            Response response = keycloak.realm(UserServiceCoreConfig.realm).users().create(UserDtoMapper.toUserRepresentation(createRequest));
+            if (response.getStatus() > 201) {
+                dataResponse.setSuccess(false);
+                OperationError operationError = new OperationError();
+                operationError.setMessage(response.getStatusInfo().getReasonPhrase());
+            } else {
+                dataResponse.setSuccess(true);
+                dataResponse.setData(createRequest);
+            }
+        } else {
+            log.debug("User " + createRequest.getUsername() + " will be updated");
+            UserRepresentation user = search.stream().findFirst().get();
+            user.setFirstName(createRequest.getFirstName());
+            user.setLastName(createRequest.getLastName());
+            user.setEmail(createRequest.getEmail());
+            keycloak.realm(UserServiceCoreConfig.realm).users().get(user.getId()).update(user);
             dataResponse.setSuccess(true);
             dataResponse.setData(createRequest);
         }

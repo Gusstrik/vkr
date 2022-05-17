@@ -15,5 +15,6 @@ public interface UserService {
 
     PagingResponseDto<UserDto> searchUser(PagingRequestDto<UserSearchFilter> searchFilter);
 
-    BaseDataResponse<UserDto> createUser (UserCreateRequest createRequest);
+    BaseDataResponse<UserDto> saveUser(UserCreateRequest createRequest);
+
 }

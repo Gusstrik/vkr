@@ -9,7 +9,6 @@ import com.gusstrik.vkr.service.userservice.dto.UserDto;
 import com.gusstrik.vkr.service.userservice.dto.UserSearchFilter;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.keycloak.representations.idm.UserRepresentation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
@@ -40,7 +39,18 @@ public class UserServiceTest {
         createRequest.setFirstName("Иван");
         createRequest.setLastName("Иванович");
         createRequest.setTemporaryPassword("gtn");
-        BaseDataResponse<UserDto> response = userService.createUser(createRequest);
+        BaseDataResponse<UserDto> response = userService.saveUser(createRequest);
+        System.out.println(response.getData());
+    }
+
+    @Test
+    public void updateUserTest(){
+        UserCreateRequest createRequest = new UserCreateRequest();
+        createRequest.setEmail("test@test.ru");
+        createRequest.setUsername("user2");
+        createRequest.setFirstName("Иван");
+        createRequest.setLastName("Петров");
+        BaseDataResponse<UserDto> response = userService.saveUser(createRequest);
         System.out.println(response.getData());
     }
 }
