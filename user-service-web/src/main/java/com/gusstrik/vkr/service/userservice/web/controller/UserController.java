@@ -8,9 +8,7 @@ import com.gusstrik.vkr.service.userservice.dto.UserCreateRequest;
 import com.gusstrik.vkr.service.userservice.dto.UserDto;
 import com.gusstrik.vkr.service.userservice.dto.UserSearchFilter;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/user")
@@ -23,17 +21,17 @@ public class UserController {
     }
 
     @PostMapping(value = "/save",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseDataResponse<UserDto> saveUser (UserCreateRequest createRequest){
+    public BaseDataResponse<UserDto> saveUser (@RequestBody UserCreateRequest createRequest){
         return userService.saveUser(createRequest);
     }
 
     @PostMapping(value = "/search",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public PagingResponseDto<UserDto> searchUser (PagingRequestDto<UserSearchFilter> requestDto){
+    public PagingResponseDto<UserDto> searchUser (@RequestBody PagingRequestDto<UserSearchFilter> requestDto){
         return userService.searchUser(requestDto);
     }
 
     @PostMapping(value = "/delete",consumes = MediaType.APPLICATION_JSON_VALUE,produces = MediaType.APPLICATION_JSON_VALUE)
-    public BaseDataResponse<?> deleteUser (String username){
+    public BaseDataResponse<?> deleteUser (@RequestParam("username") String username){
         return userService.deleteUser(username);
     }
 }
